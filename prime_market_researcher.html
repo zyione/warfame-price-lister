@@ -1,24 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Market Intelligence • Warframe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Modern Fonts & Icons -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg: #0b0e14;
-            --panel: #161b22;
-            --panel-hover: #1c2128;
-            --accent: #3b82f6; /* Modern SaaS Blue */
-            --accent-soft: rgba(59, 130, 246, 0.1);
-            --text-primary: #f0f6fc;
-            --text-secondary: #8b949e;
-            --border: #30363d;
-            --success: #238636;
-            --danger: #da3633;
-            --radius: 8px;
-            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Color Palette */
+            --bg-base: #030712;
+            --bg-card: rgba(17, 24, 39, 0.6);
+            --bg-card-hover: rgba(31, 41, 55, 0.8);
+            --border-light: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(99, 102, 241, 0.4);
+
+            --accent-primary: #6366f1;
+            /* Indigo */
+            --accent-secondary: #8b5cf6;
+            /* Violet */
+            --accent-glow: rgba(139, 92, 246, 0.2);
+            --accent-gradient: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --text-accent: #c4b5fd;
+
+            --plat-color: #fbbf24;
+            /* Warframe Platinum Gold */
+
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --transition: all 0.3s var(--ease-out);
         }
 
         * {
@@ -28,11 +48,17 @@
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text-primary);
-            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
+            min-height: 100vh;
+            /* Ambient background glow */
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+            background-attachment: fixed;
         }
 
         /* Top Progress Line */
@@ -40,67 +66,93 @@
             position: fixed;
             top: 0;
             left: 0;
-            height: 2px;
-            background: var(--accent);
+            height: 3px;
+            background: var(--accent-gradient);
             width: 0%;
             z-index: 1000;
-            transition: width 0.4s ease;
-            box-shadow: 0 0 10px var(--accent);
+            transition: width 0.4s var(--ease-out);
+            box-shadow: 0 0 15px var(--accent-primary);
         }
 
         /* Top Bar / Header */
         header {
-            background: var(--bg);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
+            background: rgba(3, 7, 18, 0.6);
+            border-bottom: 1px solid var(--border-light);
+            padding: 1rem 3rem;
             position: sticky;
             top: 0;
             z-index: 100;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
+        }
+
+        .brand-icon {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--accent-primary);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
         }
 
         .brand h1 {
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.5rem;
+            font-weight: 700;
             letter-spacing: -0.02em;
+            background: var(--text-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand h1 span {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .sync-indicator {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            background: var(--panel);
-            padding: 4px 10px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--text-accent);
+            background: rgba(139, 92, 246, 0.1);
+            padding: 6px 14px;
+            border-radius: 100px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            font-weight: 500;
         }
 
         .dot {
-            width: 6px;
-            height: 6px;
-            background: var(--accent);
+            width: 8px;
+            height: 8px;
+            background: var(--accent-secondary);
             border-radius: 50%;
             animation: pulse 2s infinite;
+            box-shadow: 0 0 8px var(--accent-secondary);
         }
 
         /* Toolbar */
         .toolbar {
             max-width: 1400px;
-            margin: 1.5rem auto;
-            padding: 0 2rem;
+            margin: 2rem auto 1.5rem;
+            padding: 0 3rem;
             display: grid;
-            grid-template-columns: 1fr auto;
+            grid-template-columns: 1fr auto auto;
             gap: 1rem;
             align-items: center;
         }
@@ -108,518 +160,862 @@
         .search-container {
             position: relative;
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            transition: var(--transition);
         }
 
         .search-container input {
             width: 100%;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            padding: 10px 16px;
-            border-radius: var(--radius);
-            font-size: 0.9rem;
+            background: rgba(17, 24, 39, 0.5);
+            border: 1px solid var(--border-light);
+            color: var(--text-main);
+            padding: 14px 16px 14px 44px;
+            border-radius: var(--radius-lg);
+            font-size: 0.95rem;
+            font-family: inherit;
             outline: none;
             transition: var(--transition);
+            backdrop-filter: blur(8px);
         }
 
         .search-container input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-soft);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+            background: rgba(17, 24, 39, 0.8);
+        }
+
+        .search-container input:focus+i {
+            color: var(--accent-primary);
+        }
+
+        .sort-container select {
+            appearance: none;
+            background: rgba(17, 24, 39, 0.5);
+            color: var(--text-main);
+            border: 1px solid var(--border-light);
+            padding: 14px 40px 14px 20px;
+            border-radius: var(--radius-lg);
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: var(--transition);
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+        }
+
+        .sort-container select:focus,
+        .sort-container select:hover {
+            border-color: var(--accent-primary);
+            background-color: rgba(17, 24, 39, 0.8);
+        }
+
+        .sort-container select option {
+            background: #111827;
+            color: #f9fafb;
         }
 
         .view-controls {
             display: flex;
-            gap: 8px;
-            background: var(--panel);
-            padding: 4px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
+            gap: 4px;
+            background: rgba(17, 24, 39, 0.5);
+            padding: 6px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-light);
+            backdrop-filter: blur(8px);
         }
 
         .icon-btn {
             background: transparent;
             border: none;
-            color: var(--text-secondary);
-            padding: 6px 12px;
-            border-radius: 4px;
+            color: var(--text-muted);
+            padding: 8px 12px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 500;
+            font-size: 1rem;
             transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .icon-btn.active {
-            background: var(--border);
-            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
         /* Filter Pills */
         .filters {
             max-width: 1400px;
-            margin: 0 auto 2rem;
-            padding: 0 2rem;
+            margin: 0 auto 2.5rem;
+            padding: 0 3rem;
             display: flex;
-            gap: 8px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
         .pill {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            padding: 6px 14px;
+            background: rgba(17, 24, 39, 0.5);
+            border: 1px solid var(--border-light);
+            color: var(--text-muted);
+            padding: 8px 20px;
             border-radius: 100px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            font-family: inherit;
             cursor: pointer;
             transition: var(--transition);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pill i {
+            font-size: 0.8rem;
         }
 
         .pill:hover {
-            border-color: var(--text-secondary);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: var(--text-main);
+            transform: translateY(-1px);
         }
 
         .pill.active {
-            background: var(--accent);
+            background: var(--accent-gradient);
             color: white;
-            border-color: var(--accent);
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
         }
 
         /* Main Container */
         main {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 2rem 4rem;
+            padding: 0 3rem 5rem;
         }
 
         /* Grid View */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
         }
 
         .card {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-xl);
+            padding: 24px;
             transition: var(--transition);
             cursor: default;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
         .card:hover {
-            border-color: var(--text-secondary);
-            transform: translateY(-2px);
+            background: var(--bg-card-hover);
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-4px);
+            box-shadow:
+                0 10px 30px -10px rgba(0, 0, 0, 0.5),
+                0 0 20px 0 rgba(99, 102, 241, 0.1) inset;
+        }
+
+        .card:hover::before {
+            opacity: 1;
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 16px;
+            align-items: flex-start;
+            gap: 12px;
         }
 
         .name {
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 1.15rem;
+            line-height: 1.3;
+            color: var(--text-main);
+        }
+
+        /* Ensure specific items styling looks neat */
+        .name-highlight {
+            color: #d1d5db;
+            font-size: 0.9em;
+            font-weight: 400;
         }
 
         .vol-badge {
-            font-size: 0.7rem;
-            color: var(--accent);
-            background: var(--accent-soft);
-            padding: 2px 8px;
-            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--accent-primary);
+            background: rgba(99, 102, 241, 0.1);
+            padding: 4px 10px;
+            border-radius: 6px;
             font-weight: 600;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .stats-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 16px;
+            margin-top: auto;
         }
 
         .stat-box {
-            background: rgba(0,0,0,0.2);
-            padding: 10px;
-            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .card:hover .stat-box {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.06);
         }
 
         .label {
-            display: block;
-            font-size: 0.65rem;
-            color: var(--text-secondary);
+            font-size: 0.75rem;
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 4px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
+
+        .label.min {
+            color: #10b981;
+        }
+
+        /* Emerald */
+        .label.avg {
+            color: #8b5cf6;
+        }
+
+        /* Violet */
 
         .value {
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 1.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Loading States */
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        .skeleton {
+            animation: shimmer 2s infinite linear;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.02) 4%, rgba(255, 255, 255, 0.06) 25%, rgba(255, 255, 255, 0.02) 36%);
+            background-size: 1000px 100%;
+            border-radius: 4px;
+        }
+
+        .card.loading-card {
+            pointer-events: none;
+        }
+
+        .card.loading-card .name {
+            width: 70%;
+            height: 24px;
+            border-radius: 6px;
+        }
+
+        .card.loading-card .vol-badge {
+            width: 60px;
+            height: 24px;
+            border-radius: 6px;
+            border-color: transparent;
+        }
+
+        .card.loading-card .value {
+            width: 50%;
+            height: 28px;
+            border-radius: 6px;
+        }
+
+        .card.loading-card .label {
+            opacity: 0.5;
         }
 
         /* List View */
         .list {
             display: flex;
             flex-direction: column;
-            gap: 1px;
-            background: var(--border);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
+            gap: 8px;
         }
 
         .list-row {
-            background: var(--panel);
-            padding: 12px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 16px 24px;
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            grid-template-columns: 2.5fr 1fr 1fr 1fr 1fr;
             align-items: center;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             transition: var(--transition);
+            backdrop-filter: blur(12px);
         }
 
         .list-row:hover {
-            background: var(--panel-hover);
+            background: var(--bg-card-hover);
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateX(4px);
         }
 
         .list-header {
-            background: var(--bg);
-            color: var(--text-secondary);
-            font-size: 0.75rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
             text-transform: uppercase;
             font-weight: 600;
             letter-spacing: 0.05em;
-            border-bottom: 1px solid var(--border);
+            padding: 0 24px 8px;
+            margin-bottom: 4px;
+        }
+
+        .list-header:hover {
+            background: transparent;
+            border-color: transparent;
+            transform: none;
         }
 
         /* Utilities */
         @keyframes pulse {
-            0% { opacity: 0.4; transform: scale(0.9); }
-            50% { opacity: 1; transform: scale(1.1); }
-            100% { opacity: 0.4; transform: scale(0.9); }
+            0% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+
+            100% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+        }
+
+        .platinum {
+            color: var(--text-main);
         }
 
         .platinum::after {
-            content: " p";
-            opacity: 0.6;
-            font-size: 0.8em;
+            content: "";
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="1em" height="1em"><path fill="%23fbbf24" d="M341.3,17c-26-8.5-52.6-13-79-13C122.9,4,10.6,116.3,10.6,256S122.9,508,262.3,508c139.4,0,251.7-112.3,251.7-252 c0-21.9-3-43.7-8.8-64.8L341.3,17z"/></svg>') no-repeat center center;
+            background-size: contain;
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            margin-left: 6px;
+            vertical-align: middle;
+            filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.4));
         }
 
         /* Responsive */
+        @media (max-width: 900px) {
+            .toolbar {
+                grid-template-columns: 1fr;
+            }
+
+            .search-container {
+                max-width: 100%;
+            }
+        }
+
         @media (max-width: 768px) {
-            .list-row { grid-template-columns: 1fr 1fr; gap: 8px; }
-            .list-header { display: none; }
-            .toolbar { grid-template-columns: 1fr; }
+            header {
+                padding: 1.5rem 1.5rem;
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .brand h1 {
+                font-size: 1.25rem;
+            }
+
+            .toolbar,
+            .filters,
+            main {
+                padding: 1rem 1.5rem;
+            }
+
+            .list-row {
+                grid-template-columns: 2fr 1fr 1fr;
+                gap: 12px;
+            }
+
+            .list-row>span:nth-child(n+4) {
+                display: none;
+            }
+
+            .list-header {
+                display: none;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Smooth scrolling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-base);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
+
 <body>
 
-<div id="topProgress"></div>
+    <div id="topProgress"></div>
 
-<header>
-    <div class="brand">
-        <h1>Market Intel</h1>
-        <div class="sync-indicator" id="syncStatusIndicator">
-            <div class="dot"></div>
-            <span id="syncStatusText">Establishing Neural Link...</span>
+    <header>
+        <div class="brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-bolt"></i>
+            </div>
+            <h1>Market <span>Intelligence</span></h1>
+            <div class="sync-indicator" id="syncStatusIndicator">
+                <div class="dot"></div>
+                <span id="syncStatusText">Establishing Neural Link...</span>
+            </div>
+        </div>
+        <div class="view-controls">
+            <button class="icon-btn active" id="gridToggle" title="Grid View"><i
+                    class="fa-solid fa-border-all"></i></button>
+            <button class="icon-btn" id="listToggle" title="List View"><i class="fa-solid fa-list-ul"></i></button>
+        </div>
+    </header>
+
+    <div class="toolbar">
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Search for prime sets or items...">
+        </div>
+        <div class="sort-container">
+            <select id="sortSelect">
+                <option value="name">Sort by Name</option>
+                <option value="avg_price">Sort by Price (Avg)</option>
+                <option value="min_price">Sort by Price (Min)</option>
+                <option value="volume">Sort by Volume</option>
+            </select>
         </div>
     </div>
-    <div class="view-controls">
-        <button class="icon-btn active" id="gridToggle">Grid</button>
-        <button class="icon-btn" id="listToggle">List</button>
+
+    <div class="filters" id="categoryFilters">
+        <button class="pill active" data-type="warframe"><i class="fa-solid fa-robot"></i> Warframes</button>
+        <button class="pill" data-type="primary"><i class="fa-solid fa-crosshairs"></i> Primary</button>
+        <button class="pill" data-type="secondary"><i class="fa-solid fa-gun"></i> Secondary</button>
+        <button class="pill" data-type="melee"><i class="fa-solid fa-khanda"></i> Melee</button>
+        <button class="pill" data-type="sentinel"><i class="fa-solid fa-eye"></i> Sentinel</button>
+        <button class="pill" data-type="all"><i class="fa-solid fa-layer-group"></i> All Items</button>
     </div>
-</header>
 
-<div class="toolbar">
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search for prime sets...">
-    </div>
-    <div class="sort-container">
-        <select id="sortSelect" style="background: var(--panel); color: white; border: 1px solid var(--border); padding: 10px; border-radius: 8px;">
-            <option value="name">Name</option>
-            <option value="avg_price">Price (Avg)</option>
-            <option value="min_price">Price (Min)</option>
-            <option value="volume">Volume</option>
-        </select>
-    </div>
-</div>
+    <main id="mainContent">
+        <div id="itemsDisplay" class="grid">
+            <!-- Items injected here -->
+        </div>
+    </main>
 
-<div class="filters" id="categoryFilters">
-    <button class="pill active" data-type="warframe">Warframes</button>
-    <button class="pill" data-type="primary">Primary</button>
-    <button class="pill" data-type="secondary">Secondary</button>
-    <button class="pill" data-type="melee">Melee</button>
-    <button class="pill" data-type="sentinel">Sentinel</button>
-    <button class="pill" data-type="all">All Items</button>
-</div>
+    <script>
+        /**
+         * BUSINESS LOGIC & DATA PERSISTENCE
+         */
+        const API_V2 = "https://api.warframe.market/v2";
+        const API_V1 = "https://api.warframe.market/v1";
+        const CACHE_KEY = "wf_market_intel_v5_redesign";
 
-<main id="mainContent">
-    <div id="itemsDisplay" class="grid">
-        <!-- Items injected here -->
-    </div>
-</main>
+        const PROXIES = [
+            { name: "AllOrigins", url: "https://api.allorigins.win/raw?url=" },
+            { name: "Codetabs", url: "https://api.codetabs.com/v1/proxy?quest=" }
+        ];
 
-<script>
-    /**
-     * BUSINESS LOGIC & DATA PERSISTENCE
-     */
-    const API_V2 = "https://api.warframe.market/v2";
-    const API_V1 = "https://api.warframe.market/v1";
-    const CACHE_KEY = "wf_market_intel_v4";
-    
-    const PROXIES = [
-        { name: "AllOrigins", url: "https://api.allorigins.win/raw?url=" },
-        { name: "Codetabs", url: "https://api.codetabs.com/v1/proxy?quest=" }
-    ];
+        let currentProxyIndex = 0;
+        let items = [];
+        let activeCategory = 'warframe';
+        let searchQuery = '';
+        let sortBy = 'name';
+        let viewMode = 'grid'; // grid | list
 
-    let currentProxyIndex = 0;
-    let items = [];
-    let activeCategory = 'warframe';
-    let searchQuery = '';
-    let sortBy = 'name';
-    let viewMode = 'grid'; // grid | list
+        const fetchQueue = [];
+        let isFetching = false;
+        const THROTTLE_DELAY = 250; // Quicker requests
+        const STALE_TIME_MS = 60 * 60 * 1000; // 1 hour data freshness
 
-    const fetchQueue = [];
-    let isFetching = false;
-    const THROTTLE_DELAY = 450;
+        // DOM Elements
+        let display, searchInput, sortSelect, catFilters, topBar, syncStatus;
 
-    // DOM Elements
-    let display, searchInput, sortSelect, catFilters, topBar, syncStatus;
+        /**
+         * INIT: The Load Lifecycle
+         */
+        async function init() {
+            display = document.getElementById('itemsDisplay');
+            searchInput = document.getElementById('searchInput');
+            sortSelect = document.getElementById('sortSelect');
+            catFilters = document.getElementById('categoryFilters');
+            topBar = document.getElementById('topProgress');
+            syncStatus = document.getElementById('syncStatusText');
 
-    /**
-     * INIT: The Load Lifecycle
-     */
-    function init() {
-        // Grab elements
-        display = document.getElementById('itemsDisplay');
-        searchInput = document.getElementById('searchInput');
-        sortSelect = document.getElementById('sortSelect');
-        catFilters = document.getElementById('categoryFilters');
-        topBar = document.getElementById('topProgress');
-        syncStatus = document.getElementById('syncStatusText');
-
-        // 1. INSTANT LOAD: Load from cache immediately
-        const cached = localStorage.getItem(CACHE_KEY);
-        if (cached) {
-            items = JSON.parse(cached);
-            console.log("[CACHE] Loaded items from local storage.");
-            render();
-            syncStatus.innerText = "Cache Loaded • Refreshing Data...";
-        }
-
-        // 2. BACKGROUND SYNC: Start fetching fresh data
-        startFreshSync();
-    }
-
-    async function startFreshSync() {
-        try {
-            const res = await fetchWithProxy(`${API_V2}/items`);
-            const rawItems = res.data || [];
-            
-            // Merge with existing items to preserve stats while we wait for new ones
-            const newItems = rawItems
-                .filter(item => item.slug && item.slug.endsWith('_prime_set'))
-                .map(item => {
-                    const existing = items.find(i => i.url_name === item.slug);
-                    return {
-                        url_name: item.slug,
-                        item_name: item.i18n.en.name,
-                        tags: item.tags || [],
-                        stats: existing ? existing.stats : null,
-                        loaded: existing ? existing.loaded : false
-                    };
-                });
-
-            items = newItems;
-            render();
-            
-            // Push to background statistics fetcher
-            fetchQueue.push(...items);
-            processQueue();
-
-        } catch (err) {
-            syncStatus.innerText = "Sync Error: Check Connection";
-            console.error(err);
-        }
-    }
-
-    async function processQueue() {
-        if (isFetching || fetchQueue.length === 0) return;
-        isFetching = true;
-
-        let processed = 0;
-        const total = fetchQueue.length;
-
-        while (fetchQueue.length > 0) {
-            const item = fetchQueue.shift();
-            processed++;
-            
-            // Update UI Progress
-            const percent = (processed / total) * 100;
-            topBar.style.width = `${percent}%`;
-            syncStatus.innerText = `Syncing Market Intelligence: ${processed}/${total}`;
-
+            // 1. INSTANT LOAD: Load from physical file cache immediately
             try {
-                const proxy = PROXIES[currentProxyIndex];
-                const statsRes = await fetch(`${proxy.url}${encodeURIComponent(`${API_V1}/items/${item.url_name}/statistics`)}`);
-                const statsData = await statsRes.json();
-
-                if (statsData.payload && statsData.payload.statistics_live) {
-                    const liveStats = statsData.payload.statistics_live['48hours'] || [];
-                    if (liveStats.length > 0) {
-                        const latest = liveStats[liveStats.length - 1];
-                        item.stats = {
-                            avg_price: Math.round(latest.avg_price),
-                            min_price: latest.min_price,
-                            max_price: latest.max_price,
-                            volume: latest.volume
-                        };
-                    }
+                // cache busting string to ensure we get the latest file
+                const cacheRes = await fetch('/market_cache.json?' + new Date().getTime());
+                if (cacheRes.ok) {
+                    items = await cacheRes.json();
+                    console.log("[CACHE] Loaded items from physical file.");
+                    render();
+                    syncStatus.innerText = "Cache Loaded • Refreshing...";
                 }
-                item.loaded = true;
-                
-                // Partial Cache Update: Save every 10 items to persist progress
-                if (processed % 10 === 0) {
-                    saveToCache();
-                }
-
-                if (shouldShow(item)) render();
-
             } catch (e) {
-                console.warn(`Skipped ${item.url_name}`, e);
-                item.loaded = true;
+                console.log("[CACHE] No physical cache file found yet.");
             }
 
-            await new Promise(r => setTimeout(r, THROTTLE_DELAY));
+            // 2. BACKGROUND SYNC: Start fetching fresh data
+            startFreshSync();
         }
 
-        isFetching = false;
-        topBar.style.width = "0%";
-        syncStatus.innerText = "Real-time Link Active";
-        saveToCache();
-    }
+        async function startFreshSync() {
+            try {
+                const res = await fetchWithProxy(`${API_V2}/items`);
+                const rawItems = res.data || [];
 
-    /**
-     * UI RENDERING
-     */
-    function render() {
-        const filtered = items
-            .filter(shouldShow)
-            .sort((a, b) => {
-                if (sortBy === 'name') return a.item_name.localeCompare(b.item_name);
-                const valA = a.stats ? a.stats[sortBy] : -1;
-                const valB = b.stats ? b.stats[sortBy] : -1;
-                return valB - valA;
-            });
+                // Merge with existing items to preserve stats while we wait for new ones
+                const newItems = rawItems
+                    .filter(item => item.slug && item.slug.endsWith('_prime_set'))
+                    .map(item => {
+                        const existing = items.find(i => i.url_name === item.slug);
+                        return {
+                            url_name: item.slug,
+                            item_name: item.i18n.en.name,
+                            tags: item.tags || [],
+                            stats: existing ? existing.stats : null,
+                            loaded: existing ? existing.loaded : false,
+                            last_updated: existing ? existing.last_updated : 0
+                        };
+                    });
 
-        if (viewMode === 'grid') {
-            display.className = 'grid';
-            display.innerHTML = filtered.map(renderCard).join('');
-        } else {
-            display.className = 'list';
-            display.innerHTML = `
+                items = newItems;
+                render();
+
+                // Push to background statistics fetcher
+                fetchQueue.push(...items);
+                processQueue();
+
+            } catch (err) {
+                syncStatus.innerText = "Sync Error: Connecting...";
+                console.error(err);
+            }
+        }
+
+        async function processQueue() {
+            if (isFetching || fetchQueue.length === 0) return;
+            isFetching = true;
+
+            let processed = 0;
+            const total = fetchQueue.length;
+
+            while (fetchQueue.length > 0) {
+                const item = fetchQueue.shift();
+                processed++;
+
+                // Update UI Progress
+                const percent = (processed / total) * 100;
+                topBar.style.width = `${percent}%`;
+                syncStatus.innerText = `Syncing Intel: ${Math.round(percent)}%`;
+
+                // Skip network request if we fetched this recently
+                if (item.loaded && item.last_updated && (Date.now() - item.last_updated < STALE_TIME_MS)) {
+                    continue;
+                }
+
+                try {
+                    const proxy = PROXIES[currentProxyIndex];
+                    const statsRes = await fetch(`${proxy.url}${encodeURIComponent(`${API_V1}/items/${item.url_name}/statistics`)}`);
+                    const statsData = await statsRes.json();
+
+                    if (statsData.payload && statsData.payload.statistics_live) {
+                        const liveStats = statsData.payload.statistics_live['48hours'] || [];
+                        if (liveStats.length > 0) {
+                            const latest = liveStats[liveStats.length - 1];
+                            item.stats = {
+                                avg_price: Math.round(latest.avg_price),
+                                min_price: latest.min_price,
+                                max_price: latest.max_price,
+                                volume: latest.volume
+                            };
+                        }
+                    }
+                    item.loaded = true;
+                    item.last_updated = Date.now();
+
+                    // Partial Cache Update: Save every 10 items to persist progress
+                    if (processed % 10 === 0) {
+                        saveToCache();
+                    }
+
+                    if (shouldShow(item)) {
+                        // Optimized DOM update: Only re-render if it's visible to avoid lag
+                        render();
+                    }
+
+                } catch (e) {
+                    console.warn(`Skipped ${item.url_name}`, e);
+                    item.loaded = true;
+                }
+
+                await new Promise(r => setTimeout(r, THROTTLE_DELAY));
+            }
+
+            isFetching = false;
+            topBar.style.width = "0%";
+            syncStatus.innerText = "Real-time Link Active";
+            syncStatus.parentElement.style.background = "rgba(16, 185, 129, 0.1)";
+            syncStatus.parentElement.style.borderColor = "rgba(16, 185, 129, 0.2)";
+            syncStatus.parentElement.style.color = "#34d399";
+            syncStatus.previousElementSibling.style.background = "#34d399";
+            syncStatus.previousElementSibling.style.boxShadow = "0 0 8px #34d399";
+            saveToCache();
+        }
+
+        /**
+         * UI RENDERING
+         */
+        function formatName(name) {
+            // Formats "Ash Prime Set" to Highlight "Ash" and mute "Prime Set"
+            return name.replace(' Prime Set', ' <span class="name-highlight">Prime Set</span>');
+        }
+
+        function render() {
+            const filtered = items
+                .filter(shouldShow)
+                .sort((a, b) => {
+                    if (sortBy === 'name') return a.item_name.localeCompare(b.item_name);
+                    const valA = a.stats ? a.stats[sortBy] : -1;
+                    const valB = b.stats ? b.stats[sortBy] : -1;
+                    return valB - valA; // Descending
+                });
+
+            if (viewMode === 'grid') {
+                display.className = 'grid';
+                display.innerHTML = filtered.map(item => item.loaded ? renderCard(item) : renderSkeletonCard(item)).join('');
+            } else {
+                display.className = 'list';
+                display.innerHTML = `
                 <div class="list-row list-header">
-                    <span>Item Name</span>
-                    <span>Avg Price</span>
-                    <span>Min</span>
-                    <span>Max</span>
-                    <span>Volume</span>
+                    <span><i class="fa-solid fa-box-open" style="margin-right: 6px;"></i> Item Name</span>
+                    <span><i class="fa-solid fa-chart-line" style="margin-right: 6px;"></i> Avg Price</span>
+                    <span><i class="fa-solid fa-tag" style="margin-right: 6px;"></i> Min Price</span>
+                    <span><i class="fa-solid fa-arrow-up-right-dots" style="margin-right: 6px;"></i> Max Price</span>
+                    <span><i class="fa-solid fa-cubes" style="margin-right: 6px;"></i> Volume</span>
                 </div>
-            ` + filtered.map(renderListRow).join('');
+            ` + filtered.map(item => item.loaded ? renderListRow(item) : renderSkeletonListRow(item)).join('');
+            }
         }
-    }
 
-    function renderCard(item) {
-        return `
+        function renderCard(item) {
+            return `
             <div class="card">
                 <div class="card-header">
-                    <span class="name">${item.item_name}</span>
-                    <span class="vol-badge">${item.stats ? item.stats.volume : '--'} Vol</span>
+                    <span class="name">${formatName(item.item_name)}</span>
+                    <span class="vol-badge"><i class="fa-solid fa-chart-bar"></i> ${item.stats ? item.stats.volume : '--'} Vol</span>
                 </div>
                 <div class="stats-row">
                     <div class="stat-box">
-                        <span class="label">Average</span>
+                        <span class="label avg"><i class="fa-solid fa-chart-line"></i> Average</span>
                         <span class="value platinum">${item.stats ? item.stats.avg_price : '--'}</span>
                     </div>
                     <div class="stat-box">
-                        <span class="label">Minimum</span>
+                        <span class="label min"><i class="fa-solid fa-tag"></i> Minimum</span>
                         <span class="value platinum">${item.stats ? item.stats.min_price : '--'}</span>
                     </div>
                 </div>
-                ${!item.loaded ? '<div style="font-size: 0.6rem; color: var(--accent); margin-top: 10px; text-transform:uppercase; opacity:0.6">Updating...</div>' : ''}
             </div>
         `;
-    }
-
-    function renderListRow(item) {
-        return `
-            <div class="list-row">
-                <span class="name">${item.item_name}</span>
-                <span class="value platinum">${item.stats ? item.stats.avg_price : '--'}</span>
-                <span class="value platinum">${item.stats ? item.stats.min_price : '--'}</span>
-                <span class="value platinum">${item.stats ? item.stats.max_price : '--'}</span>
-                <span class="value">${item.stats ? item.stats.volume : '--'}</span>
-            </div>
-        `;
-    }
-
-    function shouldShow(item) {
-        const matchesSearch = item.item_name.toLowerCase().includes(searchQuery);
-        const matchesCat = activeCategory === 'all' || item.tags.includes(activeCategory);
-        return matchesSearch && matchesCat;
-    }
-
-    function saveToCache() {
-        localStorage.setItem(CACHE_KEY, JSON.stringify(items));
-    }
-
-    async function fetchWithProxy(url, pIdx = 0) {
-        const proxy = PROXIES[pIdx];
-        try {
-            const res = await fetch(`${proxy.url}${encodeURIComponent(url)}`);
-            if (!res.ok) throw new Error();
-            return await res.json();
-        } catch (e) {
-            if (pIdx < PROXIES.length - 1) return fetchWithProxy(url, pIdx + 1);
-            throw e;
         }
-    }
 
-    // Initialize Listeners on DOM Ready
-    document.addEventListener('DOMContentLoaded', () => {
-        init();
+        function renderSkeletonCard(item) {
+            return `
+            <div class="card loading-card">
+                <div class="card-header">
+                    <span class="name skeleton"></span>
+                    <span class="vol-badge skeleton"></span>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <span class="label avg"><i class="fa-solid fa-chart-line"></i> Average</span>
+                        <span class="value skeleton"></span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="label min"><i class="fa-solid fa-tag"></i> Minimum</span>
+                        <span class="value skeleton"></span>
+                    </div>
+                </div>
+            </div>
+        `;
+        }
 
-        searchInput.addEventListener('input', (e) => { searchQuery = e.target.value.toLowerCase(); render(); });
-        sortSelect.addEventListener('change', (e) => { sortBy = e.target.value; render(); });
-        
-        catFilters.addEventListener('click', (e) => {
-            if (e.target.classList.contains('pill')) {
-                document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-                e.target.classList.add('active');
-                activeCategory = e.target.dataset.type;
-                render();
+        function renderListRow(item) {
+            return `
+            <div class="list-row">
+                <span class="name">${formatName(item.item_name)}</span>
+                <span class="value platinum">${item.stats ? item.stats.avg_price : '--'}</span>
+                <span class="value platinum price-highlight">${item.stats ? item.stats.min_price : '--'}</span>
+                <span class="value platinum">${item.stats ? item.stats.max_price : '--'}</span>
+                <span class="value" style="font-family: 'JetBrains Mono', monospace;"><i class="fa-solid fa-chart-bar" style="color: var(--text-muted); margin-right: 4px;"></i> ${item.stats ? item.stats.volume : '--'}</span>
+            </div>
+        `;
+        }
+
+        function renderSkeletonListRow(item) {
+            return `
+            <div class="list-row loading-card">
+                <span class="name skeleton" style="height: 20px; width: 60%"></span>
+                <span class="value skeleton" style="height: 20px; width: 40px"></span>
+                <span class="value skeleton" style="height: 20px; width: 40px"></span>
+                <span class="value skeleton" style="height: 20px; width: 40px"></span>
+                <span class="value skeleton" style="height: 20px; width: 40px"></span>
+            </div>
+        `;
+        }
+
+        function shouldShow(item) {
+            const matchesSearch = item.item_name.toLowerCase().includes(searchQuery);
+            const matchesCat = activeCategory === 'all' || item.tags.includes(activeCategory);
+            return matchesSearch && matchesCat;
+        }
+
+        function saveToCache() {
+            fetch('/api/cache/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(items)
+            }).then(res => {
+                if (!res.ok) console.warn('[CACHE] Server responded with error status:', res.status);
+            }).catch(err => {
+                console.warn('[CACHE] Failed to save physical cache block, make sure you are running via serve.py', err);
+            });
+        }
+
+        async function fetchWithProxy(url, pIdx = 0) {
+            const proxy = PROXIES[pIdx];
+            try {
+                const res = await fetch(`${proxy.url}${encodeURIComponent(url)}`);
+                if (!res.ok) throw new Error();
+                return await res.json();
+            } catch (e) {
+                if (pIdx < PROXIES.length - 1) return fetchWithProxy(url, pIdx + 1);
+                throw e;
             }
+        }
+
+        // Initialize Listeners on DOM Ready
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+
+            searchInput.addEventListener('input', (e) => { searchQuery = e.target.value.toLowerCase(); render(); });
+            sortSelect.addEventListener('change', (e) => { sortBy = e.target.value; render(); });
+
+            catFilters.addEventListener('click', (e) => {
+                const pill = e.target.closest('.pill');
+                if (pill) {
+                    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+                    activeCategory = pill.dataset.type;
+                    render();
+                }
+            });
+
+            document.getElementById('gridToggle').addEventListener('click', () => {
+                viewMode = 'grid';
+                document.getElementById('gridToggle').classList.add('active');
+                document.getElementById('listToggle').classList.remove('active');
+                render();
+            });
+
+            document.getElementById('listToggle').addEventListener('click', () => {
+                viewMode = 'list';
+                document.getElementById('listToggle').classList.add('active');
+                document.getElementById('gridToggle').classList.remove('active');
+                render();
+            });
         });
 
-        document.getElementById('gridToggle').addEventListener('click', () => {
-            viewMode = 'grid';
-            document.getElementById('gridToggle').classList.add('active');
-            document.getElementById('listToggle').classList.remove('active');
-            render();
-        });
-
-        document.getElementById('listToggle').addEventListener('click', () => {
-            viewMode = 'list';
-            document.getElementById('listToggle').classList.add('active');
-            document.getElementById('gridToggle').classList.remove('active');
-            render();
-        });
-    });
-
-</script>
+    </script>
 
 </body>
+
 </html>
