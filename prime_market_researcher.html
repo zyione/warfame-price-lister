@@ -115,12 +115,14 @@
             letter-spacing: -0.02em;
             background: var(--text-main);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .brand h1 span {
             background: var(--accent-gradient);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -619,6 +621,129 @@
             }
         }
 
+        /* WorldState Alerts Section */
+        .worldstate-alerts {
+            max-width: 1400px;
+            margin: 1.5rem auto 0;
+            padding: 0 3rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .alert-panel {
+            background: rgba(17, 24, 39, 0.4);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 16px 20px;
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: var(--transition);
+        }
+        
+        .alert-panel:hover {
+            background: rgba(17, 24, 39, 0.7);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .alert-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .alert-content {
+            font-size: 1.05rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .alert-badge {
+            font-size: 0.75rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        /* Omnia Fissure Highlight */
+        .alert-badge.highlight-fissure {
+            background: rgba(139, 92, 246, 0.15); /* Violet */
+            color: #c4b5fd;
+            border-color: rgba(139, 92, 246, 0.4);
+            white-space: nowrap;
+        }
+
+        .alert-badge.fissure-cascade {
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
+            animation: pulse-border 2s infinite;
+        }
+
+        .fissure-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .fissure-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.2);
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .fissure-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .fissure-timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-accent);
+        }
+
+        /* Meta Arbitration Highlight */
+        .alert-badge.highlight-arby {
+            background: rgba(239, 68, 68, 0.15); /* Red for Vitus */
+            color: #fca5a5;
+            border-color: rgba(239, 68, 68, 0.4);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+            animation: pulse-border-red 2s infinite;
+        }
+
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(139, 92, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+        }
+        
+        @keyframes pulse-border-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        @media (max-width: 900px) {
+            .worldstate-alerts { grid-template-columns: 1fr; padding: 0 1.5rem; }
+        }
+
         /* Smooth scrolling */
         ::-webkit-scrollbar {
             width: 10px;
@@ -660,6 +785,25 @@
             <button class="icon-btn" id="listToggle" title="List View"><i class="fa-solid fa-list-ul"></i></button>
         </div>
     </header>
+
+    <div class="worldstate-alerts">
+        <div class="alert-panel" id="fissureAlerts">
+            <div class="alert-header">
+                <i class="fa-solid fa-fire-flame-curved" style="color: #a78bfa;"></i> Active Omnia Fissures
+            </div>
+            <div class="alert-content" id="fissureContent">
+                <span class="text-muted" style="font-size: 0.9rem; opacity: 0.7;">Scanning orbital relays...</span>
+            </div>
+        </div>
+        <div class="alert-panel" id="arbyAlerts">
+            <div class="alert-header">
+                <i class="fa-solid fa-skull" style="color: #f87171;"></i> Current Arbitration
+            </div>
+            <div class="alert-content" id="arbyContent">
+                <span class="text-muted" style="font-size: 0.9rem; opacity: 0.7;">Connecting to Arbiters...</span>
+            </div>
+        </div>
+    </div>
 
     <div class="toolbar">
         <div class="search-container">
@@ -777,7 +921,96 @@
 
             } catch (err) {
                 syncStatus.innerText = "Sync Error: Connecting...";
-                console.error(err);
+                console.error("Market API Error:", err);
+            }
+
+            // Also fetch WorldState data for Fissures & Arbitrations
+            fetchWorldState();
+        }
+
+        async function fetchWorldState() {
+            try {
+                // Fetch Fissures
+                const fisRes = await fetch('https://api.warframestat.us/pc/fissures');
+                const fissures = await fisRes.json();
+                
+                // Fetch Zariman Cycle for upcoming rotations
+                const zariRes = await fetch('https://api.warframestat.us/pc/zarimanCycle');
+                const zariman = await zariRes.json();
+                
+                // Get all Omnia Fissures
+                const omnias = fissures.filter(f => f.tier === "Omnia");
+                const fissureContainer = document.getElementById('fissureContent');
+                
+                if (omnias.length > 0) {
+                    let htmlList = '<div class="fissure-list">';
+                    omnias.forEach(f => {
+                        const isCascade = f.missionType === "Void Cascade";
+                        const badgeClass = isCascade ? "alert-badge highlight-fissure fissure-cascade" : "alert-badge highlight-fissure";
+                        const icon = isCascade ? '<i class="fa-solid fa-star"></i> ' : '';
+                        
+                        // Calculate remaining time
+                        const expiry = new Date(f.expiry);
+                        const now = new Date();
+                        const diffMs = expiry - now;
+                        let timeStr = "Expired";
+                        if (diffMs > 0) {
+                            const mins = Math.floor(diffMs / 60000);
+                            const hrs = Math.floor(mins / 60);
+                            timeStr = hrs > 0 ? `${hrs}h ${mins % 60}m remaining` : `${mins}m remaining`;
+                        }
+
+                        htmlList += `
+                            <div class="fissure-item">
+                                <div class="fissure-item-left">
+                                    <span class="${badgeClass}">${icon}${f.missionType}</span>
+                                    <span style="font-size: 0.9rem;">${f.node}</span>
+                                </div>
+                                <span class="fissure-timer">${timeStr}</span>
+                            </div>
+                        `;
+                    });
+                    
+                    // Add Zariman bounty cycle prediction if no cascade is active
+                    const hasCascade = omnias.some(f => f.missionType === "Void Cascade");
+                    if (!hasCascade && zariman) {
+                        htmlList += `
+                            <div class="fissure-item" style="opacity: 0.7; border-color: transparent;">
+                                <div class="fissure-item-left">
+                                    <i class="fa-solid fa-clockate-rotate"></i>
+                                    <span style="font-size: 0.85rem;">Next Zariman bounty rotation in:</span>
+                                </div>
+                                <span class="fissure-timer">${zariman.timeLeft}</span>
+                            </div>
+                        `;
+                    }
+                    
+                    htmlList += '</div>';
+                    fissureContainer.innerHTML = htmlList;
+                } else {
+                    fissureContainer.innerHTML = `<span style="font-size: 0.9rem; color: var(--text-muted);">No Omnia fissures currently active.</span>`;
+                }
+
+                // Fetch Arbitration
+                const arbRes = await fetch('https://api.warframestat.us/pc/arbitration');
+                const arby = await arbRes.json();
+                const arbyContainer = document.getElementById('arbyContent');
+
+                if (!arby || arby.expired || arby.type === "Unknown") {
+                    arbyContainer.innerHTML = `<span style="font-size: 0.9rem; color: var(--text-muted);">Arbitration cycle rotation in progress...</span>`;
+                } else {
+                    const isMeta = ['Defense', 'Interception', 'Excavation', 'Disruption'].includes(arby.type);
+                    if (isMeta) {
+                        arbyContainer.innerHTML = `<span class="alert-badge highlight-arby"><i class="fa-solid fa-trophy"></i> Meta: ${arby.type}</span><span style="font-size: 0.9rem;">${arby.node} against ${arby.enemy}</span>`;
+                    } else {
+                        arbyContainer.innerHTML = `<span class="alert-badge">${arby.type}</span><span style="font-size: 0.9rem; color: var(--text-muted);">${arby.node} against ${arby.enemy}</span>`;
+                    }
+                }
+
+            } catch (e) {
+                console.warn("Failed to fetch WorldState data", e);
+                document.getElementById('fissureContent').innerHTML = `<span style="font-size: 0.9rem; color: #ef4444;">Connection failed</span>`;
+                document.getElementById('arbyContent').innerHTML = `<span style="font-size: 0.9rem; color: #ef4444;">Connection failed</span>`;
             }
         }
 
@@ -797,8 +1030,8 @@
                 topBar.style.width = `${percent}%`;
                 syncStatus.innerText = `Syncing Intel: ${Math.round(percent)}%`;
 
-                // Skip network request if we fetched this recently
-                if (item.loaded && item.last_updated && (Date.now() - item.last_updated < STALE_TIME_MS)) {
+                // Skip network request if we fetched this recently AND we have valid stats
+                if (item.stats && item.loaded && item.last_updated && (Date.now() - item.last_updated < STALE_TIME_MS)) {
                     continue;
                 }
 
@@ -834,7 +1067,7 @@
 
                 } catch (e) {
                     console.warn(`Skipped ${item.url_name}`, e);
-                    item.loaded = true;
+                    // Don't mark as loaded so it retries next time
                 }
 
                 await new Promise(r => setTimeout(r, THROTTLE_DELAY));
