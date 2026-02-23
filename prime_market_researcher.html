@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Intelligence • Warframe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0e14;
+            --panel: #161b22;
+            --panel-hover: #1c2128;
+            --accent: #3b82f6; /* Modern SaaS Blue */
+            --accent-soft: rgba(59, 130, 246, 0.1);
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --border: #30363d;
+            --success: #238636;
+            --danger: #da3633;
+            --radius: 8px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Top Progress Line */
+        #topProgress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            background: var(--accent);
+            width: 0%;
+            z-index: 1000;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        /* Top Bar / Header */
+        header {
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(12px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand h1 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .sync-indicator {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            background: var(--panel);
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            max-width: 1400px;
+            margin: 1.5rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .search-container input {
+            width: 100%;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 10px 16px;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-container input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+
+        .view-controls {
+            display: flex;
+            gap: 8px;
+            background: var(--panel);
+            padding: 4px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .icon-btn.active {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        /* Filter Pills */
+        .filters {
+            max-width: 1400px;
+            margin: 0 auto 2rem;
+            padding: 0 2rem;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .pill:hover {
+            border-color: var(--text-secondary);
+        }
+
+        .pill.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        /* Main Container */
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+        }
+
+        /* Grid View */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: var(--transition);
+            cursor: default;
+        }
+
+        .card:hover {
+            border-color: var(--text-secondary);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .vol-badge {
+            font-size: 0.7rem;
+            color: var(--accent);
+            background: var(--accent-soft);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-box {
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .label {
+            display: block;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .value {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        /* List View */
+        .list {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .list-row {
+            background: var(--panel);
+            padding: 12px 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            align-items: center;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .list-row:hover {
+            background: var(--panel-hover);
+        }
+
+        .list-header {
+            background: var(--bg);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Utilities */
+        @keyframes pulse {
+            0% { opacity: 0.4; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 0.4; transform: scale(0.9); }
+        }
+
+        .platinum::after {
+            content: " p";
+            opacity: 0.6;
+            font-size: 0.8em;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .list-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .list-header { display: none; }
+            .toolbar { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="topProgress"></div>
+
+<header>
+    <div class="brand">
+        <h1>Market Intel</h1>
+        <div class="sync-indicator" id="syncStatusIndicator">
+            <div class="dot"></div>
+            <span id="syncStatusText">Establishing Neural Link...</span>
+        </div>
+    </div>
+    <div class="view-controls">
+        <button class="icon-btn active" id="gridToggle">Grid</button>
+        <button class="icon-btn" id="listToggle">List</button>
+    </div>
+</header>
+
+<div class="toolbar">
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search for prime sets...">
+    </div>
+    <div class="sort-container">
+        <select id="sortSelect" style="background: var(--panel); color: white; border: 1px solid var(--border); padding: 10px; border-radius: 8px;">
+            <option value="name">Name</option>
+            <option value="avg_price">Price (Avg)</option>
+            <option value="min_price">Price (Min)</option>
+            <option value="volume">Volume</option>
+        </select>
+    </div>
+</div>
+
+<div class="filters" id="categoryFilters">
+    <button class="pill active" data-type="warframe">Warframes</button>
+    <button class="pill" data-type="primary">Primary</button>
+    <button class="pill" data-type="secondary">Secondary</button>
+    <button class="pill" data-type="melee">Melee</button>
+    <button class="pill" data-type="sentinel">Sentinel</button>
+    <button class="pill" data-type="all">All Items</button>
+</div>
+
+<main id="mainContent">
+    <div id="itemsDisplay" class="grid">
+        <!-- Items injected here -->
+    </div>
+</main>
+
+<script>
+    /**
+     * BUSINESS LOGIC & DATA PERSISTENCE
+     */
+    const API_V2 = "https://api.warframe.market/v2";
+    const API_V1 = "https://api.warframe.market/v1";
+    const CACHE_KEY = "wf_market_intel_v4";
+    
+    const PROXIES = [
+        { name: "AllOrigins", url: "https://api.allorigins.win/raw?url=" },
+        { name: "Codetabs", url: "https://api.codetabs.com/v1/proxy?quest=" }
+    ];
+
+    let currentProxyIndex = 0;
+    let items = [];
+    let activeCategory = 'warframe';
+    let searchQuery = '';
+    let sortBy = 'name';
+    let viewMode = 'grid'; // grid | list
+
+    const fetchQueue = [];
+    let isFetching = false;
+    const THROTTLE_DELAY = 450;
+
+    // DOM Elements
+    let display, searchInput, sortSelect, catFilters, topBar, syncStatus;
+
+    /**
+     * INIT: The Load Lifecycle
+     */
+    function init() {
+        // Grab elements
+        display = document.getElementById('itemsDisplay');
+        searchInput = document.getElementById('searchInput');
+        sortSelect = document.getElementById('sortSelect');
+        catFilters = document.getElementById('categoryFilters');
+        topBar = document.getElementById('topProgress');
+        syncStatus = document.getElementById('syncStatusText');
+
+        // 1. INSTANT LOAD: Load from cache immediately
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+            items = JSON.parse(cached);
+            console.log("[CACHE] Loaded items from local storage.");
+            render();
+            syncStatus.innerText = "Cache Loaded • Refreshing Data...";
+        }
+
+        // 2. BACKGROUND SYNC: Start fetching fresh data
+        startFreshSync();
+    }
+
+    async function startFreshSync() {
+        try {
+            const res = await fetchWithProxy(`${API_V2}/items`);
+            const rawItems = res.data || [];
+            
+            // Merge with existing items to preserve stats while we wait for new ones
+            const newItems = rawItems
+                .filter(item => item.slug && item.slug.endsWith('_prime_set'))
+                .map(item => {
+                    const existing = items.find(i => i.url_name === item.slug);
+                    return {
+                        url_name: item.slug,
+                        item_name: item.i18n.en.name,
+                        tags: item.tags || [],
+                        stats: existing ? existing.stats : null,
+                        loaded: existing ? existing.loaded : false
+                    };
+                });
+
+            items = newItems;
+            render();
+            
+            // Push to background statistics fetcher
+            fetchQueue.push(...items);
+            processQueue();
+
+        } catch (err) {
+            syncStatus.innerText = "Sync Error: Check Connection";
+            console.error(err);
+        }
+    }
+
+    async function processQueue() {
+        if (isFetching || fetchQueue.length === 0) return;
+        isFetching = true;
+
+        let processed = 0;
+        const total = fetchQueue.length;
+
+        while (fetchQueue.length > 0) {
+            const item = fetchQueue.shift();
+            processed++;
+            
+            // Update UI Progress
+            const percent = (processed / total) * 100;
+            topBar.style.width = `${percent}%`;
+            syncStatus.innerText = `Syncing Market Intelligence: ${processed}/${total}`;
+
+            try {
+                const proxy = PROXIES[currentProxyIndex];
+                const statsRes = await fetch(`${proxy.url}${encodeURIComponent(`${API_V1}/items/${item.url_name}/statistics`)}`);
+                const statsData = await statsRes.json();
+
+                if (statsData.payload && statsData.payload.statistics_live) {
+                    const liveStats = statsData.payload.statistics_live['48hours'] || [];
+                    if (liveStats.length > 0) {
+                        const latest = liveStats[liveStats.length - 1];
+                        item.stats = {
+                            avg_price: Math.round(latest.avg_price),
+                            min_price: latest.min_price,
+                            max_price: latest.max_price,
+                            volume: latest.volume
+                        };
+                    }
+                }
+                item.loaded = true;
+                
+                // Partial Cache Update: Save every 10 items to persist progress
+                if (processed % 10 === 0) {
+                    saveToCache();
+                }
+
+                if (shouldShow(item)) render();
+
+            } catch (e) {
+                console.warn(`Skipped ${item.url_name}`, e);
+                item.loaded = true;
+            }
+
+            await new Promise(r => setTimeout(r, THROTTLE_DELAY));
+        }
+
+        isFetching = false;
+        topBar.style.width = "0%";
+        syncStatus.innerText = "Real-time Link Active";
+        saveToCache();
+    }
+
+    /**
+     * UI RENDERING
+     */
+    function render() {
+        const filtered = items
+            .filter(shouldShow)
+            .sort((a, b) => {
+                if (sortBy === 'name') return a.item_name.localeCompare(b.item_name);
+                const valA = a.stats ? a.stats[sortBy] : -1;
+                const valB = b.stats ? b.stats[sortBy] : -1;
+                return valB - valA;
+            });
+
+        if (viewMode === 'grid') {
+            display.className = 'grid';
+            display.innerHTML = filtered.map(renderCard).join('');
+        } else {
+            display.className = 'list';
+            display.innerHTML = `
+                <div class="list-row list-header">
+                    <span>Item Name</span>
+                    <span>Avg Price</span>
+                    <span>Min</span>
+                    <span>Max</span>
+                    <span>Volume</span>
+                </div>
+            ` + filtered.map(renderListRow).join('');
+        }
+    }
+
+    function renderCard(item) {
+        return `
+            <div class="card">
+                <div class="card-header">
+                    <span class="name">${item.item_name}</span>
+                    <span class="vol-badge">${item.stats ? item.stats.volume : '--'} Vol</span>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <span class="label">Average</span>
+                        <span class="value platinum">${item.stats ? item.stats.avg_price : '--'}</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="label">Minimum</span>
+                        <span class="value platinum">${item.stats ? item.stats.min_price : '--'}</span>
+                    </div>
+                </div>
+                ${!item.loaded ? '<div style="font-size: 0.6rem; color: var(--accent); margin-top: 10px; text-transform:uppercase; opacity:0.6">Updating...</div>' : ''}
+            </div>
+        `;
+    }
+
+    function renderListRow(item) {
+        return `
+            <div class="list-row">
+                <span class="name">${item.item_name}</span>
+                <span class="value platinum">${item.stats ? item.stats.avg_price : '--'}</span>
+                <span class="value platinum">${item.stats ? item.stats.min_price : '--'}</span>
+                <span class="value platinum">${item.stats ? item.stats.max_price : '--'}</span>
+                <span class="value">${item.stats ? item.stats.volume : '--'}</span>
+            </div>
+        `;
+    }
+
+    function shouldShow(item) {
+        const matchesSearch = item.item_name.toLowerCase().includes(searchQuery);
+        const matchesCat = activeCategory === 'all' || item.tags.includes(activeCategory);
+        return matchesSearch && matchesCat;
+    }
+
+    function saveToCache() {
+        localStorage.setItem(CACHE_KEY, JSON.stringify(items));
+    }
+
+    async function fetchWithProxy(url, pIdx = 0) {
+        const proxy = PROXIES[pIdx];
+        try {
+            const res = await fetch(`${proxy.url}${encodeURIComponent(url)}`);
+            if (!res.ok) throw new Error();
+            return await res.json();
+        } catch (e) {
+            if (pIdx < PROXIES.length - 1) return fetchWithProxy(url, pIdx + 1);
+            throw e;
+        }
+    }
+
+    // Initialize Listeners on DOM Ready
+    document.addEventListener('DOMContentLoaded', () => {
+        init();
+
+        searchInput.addEventListener('input', (e) => { searchQuery = e.target.value.toLowerCase(); render(); });
+        sortSelect.addEventListener('change', (e) => { sortBy = e.target.value; render(); });
+        
+        catFilters.addEventListener('click', (e) => {
+            if (e.target.classList.contains('pill')) {
+                document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+                e.target.classList.add('active');
+                activeCategory = e.target.dataset.type;
+                render();
+            }
+        });
+
+        document.getElementById('gridToggle').addEventListener('click', () => {
+            viewMode = 'grid';
+            document.getElementById('gridToggle').classList.add('active');
+            document.getElementById('listToggle').classList.remove('active');
+            render();
+        });
+
+        document.getElementById('listToggle').addEventListener('click', () => {
+            viewMode = 'list';
+            document.getElementById('listToggle').classList.add('active');
+            document.getElementById('gridToggle').classList.remove('active');
+            render();
+        });
+    });
+
+</script>
+
+</body>
+</html>
